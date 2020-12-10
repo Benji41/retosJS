@@ -18,15 +18,19 @@ document.querySelector('.again').addEventListener('click', function () {
 
 document.querySelector('.check').addEventListener('click', function () {
   const inputGuess = Number(document.querySelector('.guess').value);
-  if (inputGuess < number) {
-    score--;
-    document.querySelector('.message').textContent = 'Its too low';
-    document.querySelector('.score').textContent = score;
+
+  //Si el usuario no ha escrito nada
+  if (!inputGuess) {
+    document.querySelector('.message').textContent =
+      'Por favor escribe un numero!!';
   } else {
-    if (inputGuess > number) {
+    if (inputGuess < number || inputGuess > number) {
       score--;
-      document.querySelector('.message').textContent = 'Its too high';
       document.querySelector('.score').textContent = score;
+      if (inputGuess < number)
+        document.querySelector('.message').textContent = 'Its too low';
+      if (inputGuess > number)
+        document.querySelector('.message').textContent = 'Its too high';
     } else {
       if (score > highscore) highscore = score;
       document.querySelector('.highscore').textContent = highscore;
@@ -35,8 +39,4 @@ document.querySelector('.check').addEventListener('click', function () {
       document.querySelector('.number').style.width = '30rem';
     }
   }
-  //Si el usuario no ha escrito nada
-  if (!inputGuess)
-    document.querySelector('.message').textContent =
-      'Por favor escribe un numero!!';
 });
