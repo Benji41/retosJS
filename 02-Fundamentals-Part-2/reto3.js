@@ -20,6 +20,6 @@ MarkMiller.calcBMI();
 JohnSmith.calcBMI();
 console.log(
   MarkMiller.bmi > JohnSmith.bmi
-    ? `Mark's BMI is higher than John's (${MarkMiller.bmi} vs ${JohnSmith.bmi})`
-    : `John's BMI is higher than Mark's (${JohnSmith.bmi} vs ${MarkMiller.bmi})`
+    ? `${MarkMiller.fullname} BMI is higher than John's (${MarkMiller.bmi} vs ${JohnSmith.bmi})`
+    : `${JohnSmith.fullname} BMI is higher than Mark's (${JohnSmith.bmi} vs ${MarkMiller.bmi})`
 );
