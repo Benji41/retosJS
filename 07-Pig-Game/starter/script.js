@@ -3,83 +3,85 @@ const eldice = document.querySelector('.dice');
 const elbtnRoll = document.querySelector('.btn--roll');
 const elbtnNew = document.querySelector('.btn--new');
 const elbtnHold = document.querySelector('.btn--hold');
-//en luegar de utilizar queryselector, consulto el DOM por id
-const elscore0 = document.getElementById('score--0');
-const elscore1 = document.getElementById('score--1');
-const elcurrentScore0 = document.getElementById('current--0');
-const elcurrentScore1 = document.getElementById('current--1');
-const elplayer0 = document.querySelector('.player--0');
-const elplayer1 = document.querySelector('.player--1');
+const player0 = document.querySelector('.player--0');
+const player1 = document.querySelector('.player--1');
 
-let activePlayer = 0;
-let score0 = 0;
-let score1 = 0;
-let currentScore0 = 0;
-let currentScore1 = 0;
-let diceNumber = 0;
+let scores, currentScore, diceNumber, activePlayer;
 
 const randomNumber = function () {
   return Math.trunc(Math.random() * 6) + 1;
 };
 
 const reset = function () {
-  score0 = 0;
-  score1 = 0;
-  currentScore0 = 0;
-  currentScore1 = 0;
-  elscore0.textContent = score0;
-  elscore1.textContent = score1;
-  elcurrentScore0.textContent = currentScore0;
-  elcurrentScore1.textContent = currentScore1;
+  currentScore = 0;
+  scores = [0, 0];
+  diceNumber = 0;
+  activePlayer = 0;
+  document.getElementById('score--0').textContent = 0;
+  document.getElementById('score--1').textContent = 0;
+  document.getElementById('current--0').textContent = 0;
+  document.getElementById('current--1').textContent = 0;
 };
 
 reset();
 elbtnNew.addEventListener('click', function () {
   reset();
+  document
+    .querySelector(`.player--${activePlayer}`)
+    .classList.remove('player--winner');
   activePlayer = 1;
+
+  player1.classList.add('player--active');
+  elbtnHold.classList.remove('hidden');
+  elbtnRoll.classList.remove('hidden');
+  eldice.classList.remove('hidden');
 });
 
 elbtnRoll.addEventListener('click', function () {
   diceNumber = randomNumber();
   eldice.src = `dice-${diceNumber}.png`;
-  eldice.classList.remove('hidden');
-
+  currentScore += diceNumber;
+  //en luegar de utilizar queryselector, consulto el DOM por id
+  //el uso del template string para consultas  dinamicas
+  const rollScore = document.getElementById(`current--${activePlayer}`);
   if (diceNumber != 1) {
     elbtnHold.classList.remove('hidden');
-    if (activePlayer === 0) {
-      currentScore0 += diceNumber;
-      elcurrentScore0.textContent = currentScore0;
-    } else {
-      currentScore1 += diceNumber;
-      elcurrentScore1.textContent = currentScore1;
-    }
+    rollScore.textContent = currentScore;
   } else {
-    elbtnHold.classList.add('hidden');
+    currentScore = 0;
+    rollScore.textContent = currentScore;
     if (activePlayer === 0) {
       activePlayer = 1;
     } else {
       activePlayer = 0;
     }
+    elbtnHold.classList.add('hidden');
+    //quita  la clase al elemento que lo tenga de css y  de lo contrario lo agrega
+    player0.classList.toggle('player--active');
+    player1.classList.toggle('player--active');
   }
 });
 
 elbtnHold.addEventListener('click', function () {
-  if (activePlayer === 0) {
-    score0 += currentScore0;
-    elscore0.textContent = score0;
-    if (score0 >= 100) {
-      console.log(`Gano el jugador${activePlayer} con ${score0}`);
-    } else {
-      console.log('entro a cambiar jugador con el hold 0');
-      activePlayer = 1;
-    }
+  scores[activePlayer] += currentScore;
+  document.getElementById(`current--${activePlayer}`).textContent = 0;
+  document.getElementById(`score--${activePlayer}`).textContent =
+    scores[activePlayer];
+  if (scores[activePlayer] >= 100) {
+    elbtnHold.classList.add('hidden');
+    elbtnRoll.classList.add('hidden');
+    eldice.classList.add('hidden');
+    document
+      .querySelector(`.player--${activePlayer}`)
+      .classList.add('player--winner');
+    document
+      .querySelector(`.player--${activePlayer}`)
+      .classList.remove('player--active');
   } else {
-    score1 += currentScore1;
-    elscore1.textContent = score1;
-    if (score1 >= 100) {
-      console.log(`Gano el jugador${activePlayer} con ${score1}`);
-    } else {
-      activePlayer = 0;
-    }
+    activePlayer = !activePlayer ? 1 : 0;
+    player0.classList.toggle('player--active');
+    player1.classList.toggle('player--active');
   }
+
+  currentScore = 0;
 });
